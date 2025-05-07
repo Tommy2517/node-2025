@@ -1,13 +1,28 @@
 import { Router } from "express";
 
 import { userController } from "../controllers/user.controller";
+import { commonMiddleware } from "../middlewares/common.middleware";
+import { UserValidator } from "../validators/user.validator";
 
 const router = Router();
 
 router.get("/", userController.getAll);
-router.get("/:id", userController.getById);
-router.post("/", userController.create);
-router.put("/:id", userController.updateById);
-router.delete("/:id", userController.deleteById);
+router.post(
+  "/",
+  commonMiddleware.isBodyValid(UserValidator.create),
+  userController.create,
+);
+router.get("/:id", commonMiddleware.isIdValidate("id"), userController.getById);
+router.put(
+  "/:id",
+  commonMiddleware.isIdValidate("id"),
+  commonMiddleware.isBodyValid(UserValidator.update),
+  userController.updateById,
+);
+router.delete(
+  "/:id",
+  commonMiddleware.isIdValidate("id"),
+  userController.deleteById,
+);
 
 export const userRouter = router;

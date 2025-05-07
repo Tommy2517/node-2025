@@ -2,9 +2,10 @@
   "name": "2025",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "rimraf dist && tsc-watch --onSuccess \"npm run watch:server\"",
-    "watch:server": "ts-node src/main.ts --watch"
+    "watch:server": "tsx src/main.ts --watch"
   },
   "author": "",
   "license": "ISC",
