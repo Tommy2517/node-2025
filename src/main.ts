@@ -12,11 +12,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/", apiRouter);
+
 app.use(
   "*",
   (err: ApiError, req: Request, res: Response, next: NextFunction) => {
     const status = err.status || 500;
-    const message = err.message && "Something went wrong";
+    const message = err.message ?? "Something went wrong";
     res.status(status).json({ status, message });
   },
 );

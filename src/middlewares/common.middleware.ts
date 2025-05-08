@@ -7,10 +7,10 @@ import { ApiError } from "../errors/api.error";
 
 class CommonMiddleware {
   public isIdValidate(key: string) {
-    console.log("REGISTERING MIDDLEWARE WITH KEY =", key);
     return (req: Request, res: Response, next: NextFunction) => {
       try {
         const id = req.params[key];
+
         if (!isObjectIdOrHexString(id)) {
           throw new ApiError(`${key} - invalid`, StatusCodesEnum.BED_REQUEST);
         }

@@ -15,6 +15,7 @@ router.post(
 router.get("/:id", commonMiddleware.isIdValidate("id"), userController.getById);
 router.put(
   "/:id",
+
   commonMiddleware.isIdValidate("id"),
   commonMiddleware.isBodyValid(UserValidator.update),
   userController.updateById,
