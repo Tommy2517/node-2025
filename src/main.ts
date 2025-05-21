@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import express, { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
@@ -12,7 +11,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/", apiRouter);
-
 app.use(
   "*",
   (err: ApiError, req: Request, res: Response, next: NextFunction) => {

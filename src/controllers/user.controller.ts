@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
-import { IUserDTO } from "../interfaces/user.interface";
+import { IUserCreateDTO } from "../interfaces/user.interface";
 import { userService } from "../services/user.service";
 
 class UserController {
@@ -10,29 +10,36 @@ class UserController {
     res.status(StatusCodesEnum.OK).json(data);
   }
 
-  public async getById(req: Request, res: Response) {
-    const id = req.params.id;
-    const data = await userService.getById(id);
-    res.status(StatusCodesEnum.OK).json(data);
+  public async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id;
+      const data = await userService.getById(id);
+      res.status(StatusCodesEnum.OK).json(data);
+      next();
+    } catch (e) {
+      next(e);
+    }
   }
 
-  public async create(req: Request, res: Response) {
-    const body = req.body as IUserDTO;
-    const data = await userService.create(body);
-    res.status(StatusCodesEnum.CREATED).json(data);
+  public async updateById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const body = req.body as IUserCreateDTO;
+      const id = req.params.id;
+      const data = await userService.updateById(id, body);
+      res.status(StatusCodesEnum.OK).json(data);
+    } catch (e) {
+      next(e);
+    }
   }
 
-  public async updateById(req: Request, res: Response) {
-    const body = req.body as IUserDTO;
-    const id = req.params.id;
-    const data = await userService.updateById(id, body);
-    res.status(StatusCodesEnum.OK).json(data);
-  }
-
-  public async deleteById(req: Request, res: Response) {
-    const id = req.params.id;
-    await userService.deleteById(id);
-    res.status(StatusCodesEnum.NO_CONTENT).end();
+  public async deleteById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id;
+      await userService.deleteById(id);
+      res.status(StatusCodesEnum.NO_CONTENT).end();
+    } catch (e) {
+      next(e);
+    }
   }
 }
 
