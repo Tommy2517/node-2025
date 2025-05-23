@@ -1,0 +1,20 @@
+
+// db commands
+db.users.find()
+db.users.deleteMany({_id:
+        {$in:[
+                ObjectId('6828d1f11123a2045991e3bc')
+            ]}
+})
+db.users.updateOne(
+    {_id:ObjectId('67e9af75da347187027459df')},
+    {$set:{role:'admin'}}
+)
+
+
+
+tasks
+add field isActive {default:true}
+change 1 user role to admin
+admin have rights to change field isActive of users
+all users which have isActive = false can not login
