@@ -20,9 +20,10 @@ class AuthService {
       userId: user._id,
       role: user.role,
     });
-    await tokenRepository.create({ ...tokens, userId: user._id });
-    return { user, tokens };
+    await tokenRepository.create({ ...tokens, _userId: user._id });
+    return { user: user, tokens };
   }
+
   public async signIn(
     dto: IAuth,
   ): Promise<{ user: IUser; tokens: ITokenPair }> {
@@ -33,9 +34,10 @@ class AuthService {
         StatusCodesEnum.UNAUTHORIZED,
       );
     }
+    const hashedPassword = await passwordService.hashPassword(dto.password);
     const isValidPassword = await passwordService.comparePassword(
       dto.password,
-      user.password,
+      hashedPassword,
     );
     if (!isValidPassword) {
       throw new ApiError(

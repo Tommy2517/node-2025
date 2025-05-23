@@ -13,7 +13,7 @@ class AuthController {
   public async signUp(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body as IUserCreateDTO;
-      const data = authService.signUp(body);
+      const data = await authService.signUp(body);
       res.status(StatusCodesEnum.CREATED).json(data);
     } catch (e) {
       next(e);

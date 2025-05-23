@@ -36,7 +36,7 @@ class UserService {
     await userRepository.deleteById(id);
   }
   public async isEmailUnique(email: string): Promise<void> {
-    const user = userRepository.findByEmail(email);
+    const user = await userRepository.findByEmail(email);
     if (user) {
       throw new ApiError(
         "User is already existed",

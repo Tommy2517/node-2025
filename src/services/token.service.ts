@@ -39,13 +39,12 @@ class TokenService {
       throw new ApiError("Invalid token", StatusCodesEnum.UNAUTHORIZED);
     }
   }
+
   public async isTokenExist(
     token: string,
     type: "accessToken" | "refreshToken",
   ): Promise<boolean> {
-    const ITokenPromise = await tokenRepository.findByParams({
-      [type]: token,
-    });
+    const ITokenPromise = await tokenRepository.findByParams({ [type]: token });
     return !!ITokenPromise;
   }
 }
