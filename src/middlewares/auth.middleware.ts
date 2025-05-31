@@ -22,7 +22,7 @@ class AuthMiddleware {
       }
       const tokenPayload = tokenService.verifyToken(accessToken, "access");
 
-      const isTokenExist = tokenService.isTokenExist(
+      const isTokenExist = await tokenService.isTokenExist(
         accessToken,
         "accessToken",
       );

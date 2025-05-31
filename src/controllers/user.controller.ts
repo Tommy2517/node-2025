@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
-import { IUserCreateDTO } from "../interfaces/user.interface";
+import { IUserUpdateDTO } from "../interfaces/user.interface";
 import { userService } from "../services/user.service";
 
 class UserController {
@@ -23,7 +23,7 @@ class UserController {
 
   public async updateById(req: Request, res: Response, next: NextFunction) {
     try {
-      const body = req.body as IUserCreateDTO;
+      const body = req.body as IUserUpdateDTO;
       const id = req.params.id;
       const data = await userService.updateById(id, body);
       res.status(StatusCodesEnum.OK).json(data);
@@ -37,6 +37,25 @@ class UserController {
       const id = req.params.id;
       await userService.deleteById(id);
       res.status(StatusCodesEnum.NO_CONTENT).end();
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async blockUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id;
+      const user = await userService.blockUser(id);
+      res.status(StatusCodesEnum.OK).json(user);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async unBlockUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id;
+      const user = await userService.unBlockUser(id);
+      res.status(StatusCodesEnum.OK).json(user);
     } catch (e) {
       next(e);
     }

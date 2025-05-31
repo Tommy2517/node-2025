@@ -11,15 +11,13 @@ interface IUser extends IBase {
   role: RoleEnum;
   isDeleted: boolean;
   isVerified: boolean;
+  isActive: boolean;
 }
 
 type IUserCreateDTO = Pick<
   IUser,
   "email" | "password" | "name" | "surname" | "age"
 >;
-type IUserUpdateDTO = Pick<
-  IUser,
-  "email" | "password" | "name" | "surname" | "age"
->;
+type IUserUpdateDTO = Pick<IUser, "name" | "surname" | "age">;
 
 export { IUser, IUserCreateDTO, IUserUpdateDTO };

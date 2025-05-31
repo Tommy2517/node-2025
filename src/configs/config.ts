@@ -8,11 +8,17 @@ interface IConfig {
   REFRESH_SECRET: string;
   ACCESS_LIFETIME: any;
   REFRESH_LIFETIME: any;
+  USER_EMAIL: string;
+  USER_PASS: string;
 }
 
 export const config: IConfig = {
   PORT: process.env.PORT,
   MONGO_URI: process.env.MONGO_URI,
+
+  USER_EMAIL: process.env.USER_EMAIL,
+  USER_PASS: process.env.USER_PASS,
+
   ACCESS_SECRET: process.env.ACCESS_SECRET,
   REFRESH_SECRET: process.env.REFRESH_SECRET,
   ACCESS_LIFETIME: process.env.ACCESS_LIFETIME,

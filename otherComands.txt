@@ -14,7 +14,7 @@ db.users.updateOne(
 
 
 tasks
-add field isActive {default:true}
-change 1 user role to admin
+add field isActive {default:true} ✔
+change 1 user role to admin ✔
 admin have rights to change field isActive of users
-all users which have isActive = false can not login
+all users which have isActive = false can not login ✔

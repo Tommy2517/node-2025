@@ -5,6 +5,7 @@ import { ITokenPair } from "../interfaces/token.interface";
 import { IUser, IUserCreateDTO } from "../interfaces/user.interface";
 import { tokenRepository } from "../repositoryes/token.repository";
 import { userRepository } from "../repositoryes/user.repository";
+import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 import { userService } from "./user.service";
@@ -20,6 +21,10 @@ class AuthService {
       userId: user._id,
       role: user.role,
     });
+    await emailService.sendEmail(user.email, "Welcome", "welcome", {
+      name: user.name,
+      link: "youtube.com",
+    });
     await tokenRepository.create({ ...tokens, _userId: user._id });
     return { user: user, tokens };
   }
@@ -34,16 +39,20 @@ class AuthService {
         StatusCodesEnum.UNAUTHORIZED,
       );
     }
-    const hashedPassword = await passwordService.hashPassword(dto.password);
+
     const isValidPassword = await passwordService.comparePassword(
       dto.password,
-      hashedPassword,
+      user.password,
     );
     if (!isValidPassword) {
       throw new ApiError(
         "Invalid email or password",
         StatusCodesEnum.UNAUTHORIZED,
       );
+    }
+
+    if (!user.isActive) {
+      throw new ApiError("User is banned", StatusCodesEnum.FORBIDDEN);
     }
     const tokens = tokenService.generateTokens({
       userId: user._id,

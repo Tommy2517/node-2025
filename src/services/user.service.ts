@@ -1,6 +1,10 @@
 import { StatusCodesEnum } from "../enums/status-codes.enum";
 import { ApiError } from "../errors/api.error";
-import { IUser, IUserCreateDTO } from "../interfaces/user.interface";
+import {
+  IUser,
+  IUserCreateDTO,
+  IUserUpdateDTO,
+} from "../interfaces/user.interface";
 import { userRepository } from "../repositoryes/user.repository";
 
 class UserService {
@@ -20,7 +24,7 @@ class UserService {
     return userRepository.create(user);
   }
 
-  public async updateById(id: string, user: IUserCreateDTO): Promise<IUser> {
+  public async updateById(id: string, user: IUserUpdateDTO): Promise<IUser> {
     const data = await userRepository.getById(id);
     if (!data) {
       throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
@@ -43,6 +47,20 @@ class UserService {
         StatusCodesEnum.BED_REQUEST,
       );
     }
+  }
+  public async blockUser(id: string): Promise<IUser> {
+    const user = userRepository.getById(id);
+    if (!user) {
+      throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+    }
+    return await userRepository.changeIsActive(id, { isActive: false });
+  }
+  public async unBlockUser(id: string): Promise<IUser> {
+    const user = userRepository.getById(id);
+    if (!user) {
+      throw new ApiError("User not found", StatusCodesEnum.NOT_FOUND);
+    }
+    return await userRepository.changeIsActive(id, { isActive: true });
   }
 }
 
