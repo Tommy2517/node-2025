@@ -30,8 +30,7 @@ class AuthController {
   }
   public async me(req: Request, res: Response, next: NextFunction) {
     try {
-      const tokenPayload = res.locals.tokenPayload as ITokenPayload;
-      const { userId } = tokenPayload;
+      const { userId } = res.locals.tokenPayload as ITokenPayload;
       const user = await userService.getById(userId);
       res.status(StatusCodesEnum.OK).json(user);
     } catch (e) {
@@ -44,6 +43,42 @@ class AuthController {
       const tokens = tokenService.generateTokens({ userId, role });
       await tokenRepository.create({ ...tokens, _userId: userId });
       res.status(StatusCodesEnum.OK).json(tokens);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async activate(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { token } = req.params;
+      const data = await authService.activate(token);
+      res.status(StatusCodesEnum.OK).json(data);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async recoveryPassword(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { token } = req.params;
+      const { password } = req.body;
+      const data = await authService.recoveryPassword(token, password);
+      res.status(StatusCodesEnum.OK).json(data);
+    } catch (e) {
+      next(e);
+    }
+  }
+  public async recoveryPasswordRequest(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const { email } = req.body;
+      await authService.recoveryPasswordRequest(email);
+      res.status(StatusCodesEnum.OK).json("check email");
     } catch (e) {
       next(e);
     }

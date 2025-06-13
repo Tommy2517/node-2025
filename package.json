@@ -4,7 +4,7 @@
   "main": "src/main.ts",
   "type": "module",
   "scripts": {
-    "start": "rimraf dist && tsc-watch --onSuccess \"npm run watch:server\"",
+    "start": "npx kill-port 5000 && rimraf dist && tsc-watch --onSuccess \"npm run watch:server\"",
     "watch:server": "tsx src/main.ts --watch"
   },
   "author": "",

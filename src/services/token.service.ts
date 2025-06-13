@@ -1,7 +1,9 @@
 import jwt from "jsonwebtoken";
 
 import { config } from "../configs/config";
+import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { TokenTypeEnum } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api.error";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
 import { tokenRepository } from "../repositoryes/token.repository";
@@ -20,15 +22,24 @@ class TokenService {
     };
   }
 
-  public verifyToken(token: string, type: "access" | "refresh"): ITokenPayload {
+  public verifyToken(
+    token: string,
+    type: TokenTypeEnum | ActionTokenTypeEnum,
+  ): ITokenPayload {
     try {
       let secret: string;
       switch (type) {
-        case "access":
+        case TokenTypeEnum.ACCESS:
           secret = config.ACCESS_SECRET;
           break;
-        case "refresh":
+        case TokenTypeEnum.REFRESH:
           secret = config.REFRESH_SECRET;
+          break;
+        case ActionTokenTypeEnum.ACTIVATE:
+          secret = config.ACTIVATE_SECRET;
+          break;
+        case ActionTokenTypeEnum.RECOVERY:
+          secret = config.RECOVERY_SECRET;
           break;
         default:
           throw new ApiError("Invalid token type", StatusCodesEnum.BED_REQUEST);
@@ -40,8 +51,34 @@ class TokenService {
     }
   }
 
+  public generateActionToken(
+    payload: ITokenPayload,
+    type: ActionTokenTypeEnum,
+  ): string {
+    let secret: string;
+    let expiresIn: any;
+    switch (type) {
+      case ActionTokenTypeEnum.ACTIVATE:
+        secret = config.ACTIVATE_SECRET;
+        expiresIn = config.ACTIVATE_LIFETIME;
+        break;
+      case ActionTokenTypeEnum.RECOVERY:
+        secret = config.RECOVERY_SECRET;
+        expiresIn = config.RECOVERY_LIFETIME;
+        break;
+      default:
+        throw new ApiError(
+          "Invalid action token type",
+          StatusCodesEnum.BED_REQUEST,
+        );
+    }
+
+    return jwt.sign(payload, secret, { expiresIn });
+  }
+
   public async isTokenExist(
     token: string,
+    // type: TokenTypeEnum,
     type: "accessToken" | "refreshToken",
   ): Promise<boolean> {
     const ITokenPromise = await tokenRepository.findByParams({ [type]: token });

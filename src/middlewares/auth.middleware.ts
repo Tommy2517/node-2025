@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 
 import { StatusCodesEnum } from "../enums/status-codes.enum";
+import { TokenTypeEnum } from "../enums/token-type.enum";
 import { ApiError } from "../errors/api.error";
 import { IRefresh } from "../interfaces/token.interface";
 import { tokenService } from "../services/token.service";
+import { userService } from "../services/user.service";
 
 class AuthMiddleware {
   public async checkAccessToken(
@@ -20,7 +22,10 @@ class AuthMiddleware {
       if (!accessToken) {
         throw new ApiError("No token provided", StatusCodesEnum.UNAUTHORIZED);
       }
-      const tokenPayload = tokenService.verifyToken(accessToken, "access");
+      const tokenPayload = tokenService.verifyToken(
+        accessToken,
+        TokenTypeEnum.ACCESS,
+      );
 
       const isTokenExist = await tokenService.isTokenExist(
         accessToken,
@@ -29,6 +34,12 @@ class AuthMiddleware {
       if (!isTokenExist) {
         throw new ApiError("invalid token", StatusCodesEnum.UNAUTHORIZED);
       }
+
+      const isActive = await userService.isActive(tokenPayload.userId);
+      if (!isActive) {
+        throw new ApiError("User is not active", StatusCodesEnum.FORBIDDEN);
+      }
+
       req.res.locals.tokenPayload = tokenPayload;
       next();
     } catch (e) {
@@ -49,9 +60,13 @@ class AuthMiddleware {
         );
       }
 
-      const tokenPayload = tokenService.verifyToken(refreshToken, "refresh");
+      const tokenPayload = tokenService.verifyToken(
+        refreshToken,
+        TokenTypeEnum.REFRESH,
+      );
       const isTokenExist = await tokenService.isTokenExist(
         refreshToken,
+        // TokenTypeEnum.REFRESH,
         "refreshToken",
       );
       if (!isTokenExist) {

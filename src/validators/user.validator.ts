@@ -16,9 +16,12 @@ export class UserValidator {
     surname: this.surname.required(),
     age: this.age.required(),
   });
-  public static update = joi.object({
-    name: this.name.required(),
-    surname: this.surname.required(),
-    age: this.age.required(),
-  });
+  public static update = joi
+    .object({
+      name: this.name.optional(),
+      surname: this.surname.optional(),
+      age: this.age.optional(),
+    })
+    .min(1)
+    .unknown(false);
 }

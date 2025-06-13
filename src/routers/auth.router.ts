@@ -3,6 +3,7 @@ import { Router } from "express";
 import { authController } from "../controllers/auth.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
+import { AuthValidator } from "../validators/auth.validator";
 import { TokenValidator } from "../validators/token.validator";
 import { UserValidator } from "../validators/user.validator";
 
@@ -20,4 +21,13 @@ router.post(
   authController.refresh,
 );
 router.get("/me", authMiddleware.checkAccessToken, authController.me);
+
+router.patch("/activate/:token", authController.activate);
+
+router.post("/recovery", authController.recoveryPasswordRequest);
+router.patch(
+  "/recovery/:token",
+  commonMiddleware.isBodyValid(AuthValidator.validatePassword),
+  authController.recoveryPassword,
+);
 export const authRouter = router;
