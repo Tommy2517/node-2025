@@ -40,7 +40,7 @@ const dbConnection = async () => {
 };
 const start = async () => {
   await dbConnection();
-  app.listen(config.PORT, () => {
+  app.listen(config.PORT,() => {
     console.log(`Server listen on port ${config.PORT}`);
   });
 };

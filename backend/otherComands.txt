@@ -18,3 +18,8 @@ add field isActive {default:true} ✔
 change 1 user role to admin ✔
 admin have rights to change field isActive of users
 all users which have isActive = false can not login ✔
+
+
+1=mongodb+srv://dec2022:qwe1233@cluster0.dtens.mongodb.net/nodejs-express-db?retryWrites=true&w=majority
+
+2=mongodb+srv://dec2022:qwe1233@cluster0.dtens.mongodb.net/

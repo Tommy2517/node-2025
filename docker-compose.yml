@@ -1,0 +1,55 @@
+services:
+#  app:
+#    build:
+#      context: .
+#    ports:
+#      - "5555:7000"
+#    env_file:
+#      - .env
+#    volumes:
+#      - ./backend:/app
+#      - /app/node_modules
+#    restart: on-failure
+#    command: >
+#      sh -c "npm start"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  app:
+    build:
+      context: .
+    ports:
+      - "5555:7000"
+    env_file:
+      - .env
+    restart: on-failure
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command:
+      sh -c "npm start"
+
+
+  database-mongo:
+    image: mongo:latest
+    env_file:
+      - .env.mongo
+    ports:
+      - "1234:27017"
+    restart: on-failure
+    volumes:
+      - ./mongo_db:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+#    command: ["/usr/local/bin/docker-entrypoint.sh", "mongod", "--auth"]
